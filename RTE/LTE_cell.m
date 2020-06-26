@@ -34,7 +34,7 @@ for kv = 1:Nv
 end
 data_pre = data_pre(:);
 
-f = gmres(@MAB_multi,data_pre,250,1e-9);
+f = gmres(@MAB_multi,data_pre,500,1e-9);
 
 % consider the outgoing and incoming
 f = reshape(f,Nv,Nr);
