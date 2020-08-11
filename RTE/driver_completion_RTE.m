@@ -5,14 +5,17 @@ cvx_solver Mosek
 
 
 % different probabilities
-p = (1:10)/10;
+p = (1:20)/20;
 % number of trials per
 Nit = 1;
 
-Nx = 64;
-load(['test_DE/DtN_',num2str(Nx),'.mat'])
+Nr = 25;
+Nv = 30;
 
-data = flux_d_total;
+load(['data/albedo_ep_0_freq_2_Nr_', num2str(Nr),'_Nv_',num2str(Nv),'.mat'])
+
+
+data = f(:,end:-1:1);
 
 % we take the off-diagonal block
 data = data(1:end/4, end/2+1:end/4*3);
