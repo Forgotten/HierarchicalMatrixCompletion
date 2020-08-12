@@ -1,13 +1,13 @@
 %driver
 % load cvx 
-run ../../../Software/cvx/cvx_setup.m
-cvx_solver Mosek 
+run ../../../../Software/cvx/cvx_setup.m
+% cvx_solver Mosek 
 
 
 % different probabilities
 p = (1:20)/20;
 % number of trials per
-Nit = 1;
+Nit = 10;
 
 Nr = 25;
 Nv = 30;
@@ -26,7 +26,7 @@ ratioArray = zeros(length(p), Nit);
 nArray = zeros(length(p), Nit);
 
 % we save the data in a file 
-name = ['completion_',num2str(Nx),'.mat'];
+name = ['completion_Nr_',num2str(Nr),'_Nv_',num2str(Nv),'.mat'];
  
 
 for ii= 1:length(p)
