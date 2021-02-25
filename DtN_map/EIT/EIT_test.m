@@ -87,8 +87,18 @@ options = optimoptions('fminunc','Algorithm','quasi-newton',...
 [x,fval,exitflag,output] = fminunc(J,Sigma_0,options);
 
 
-%% Assembly of the matrix to build the rhs
+%% Assembly of the Mass and differentiation matrices
+
+N = size(p,1);
+T = size(t,1);
+
 M = sparse(N, T);
+Mass = sparse(N,N); 
+
+% local mass matrix
+MK = 1/12*[ 2 1 1;...
+            1 2 1;...
+            1 1 2];
 
 %% Assembly the matrix
 for e=1:T  % integration over one triangular element at a time
@@ -107,24 +117,33 @@ for e=1:T  % integration over one triangular element at a time
   M_loc=ones(3,1)*Area/3;
   
   M(nodes,e)= M(nodes,e)+M_loc; % add Ke to 9 entries of global K
+  Mass(nodes, nodes) = Mass(nodes, nodes) + Area*MK;
   
 end   % all T element matrices and vectors now assembled into K and F
 
-sigma_reconstructed = M*x/Area;
+sigma_reconstructed = Mass\(M*x);
 % 
 % % Plotting 
 % Plot the FEM approximation U(x,y) with values U_1 to U_N at the nodes 
-% figure(1); clf();
-% trisurf(t,p(:,1),p(:,2),0*p(:,1),sigma_reconstructed,'edgecolor','k','facecolor','interp');
-% view(2),axis equal,colorbar
-% 
-% % Plotting 
-% Plot the FEM approximation U(x,y) with values U_1 to U_N at the nodes 
-% figure(2); clf();
-% trisurf(t,p(:,1),p(:,2),0*p(:,1),M*sigma/Area,'edgecolor','k','facecolor','interp');
-% view(2),axis equal,colorbar
+figure(1); clf();
+trisurf(t,p(:,1),p(:,2),0*p(:,1),sigma_reconstructed,'edgecolor','none','facecolor','interp');
+view(2),axis equal, colorbar()
+% removing ticks and labels
+set(gca,'xtick',[])
+set(gca,'xticklabel',[])
+set(gca,'ytick',[])
+set(gca,'yticklabel',[])
+set(gcf, 'Position',  [0, 0, 1000, 800])
+set(gca,'FontSize', 24)
+grid off
+axis off
+top = 3.22;
+bottom = 0.5;
+caxis manual
+
+caxis([bottom top]);
 % 
 
-save('reconstructed.dat', 'sigma', 't', 'M', 'p', 'x')
+% save('reconstructed.dat', 'sigma', 't', 'M', 'p', 'x')
 
 
